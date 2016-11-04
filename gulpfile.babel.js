@@ -1,4 +1,5 @@
 'use strict';
+import 'babel-polyfill';
 import gulp from 'gulp';
 import less from 'gulp-less';
 import browserSync from 'browser-sync';
@@ -8,6 +9,10 @@ import uglify from 'gulp-uglify';
 import cssmin from 'gulp-minify-css';
 import clean from 'gulp-clean';
 import browserify from 'gulp-browserify';
+
+import webpack from 'gulp-webpack';
+
+import eslint from 'gulp-eslint';
 
 
 // const gulp = require('gulp');
@@ -125,4 +130,23 @@ gulp.task('dev', ['less:dev', 'html:dev', 'babel'], () => {
 
 // 生产构建：
 gulp.task('build', ['clean', 'html', 'cssmin', 'jsmin']);
+
+// webpack 打包
+gulp.task('webpack-js', () => {
+  gulp.src(['src/*.js', 'src/scripts/*.js'])
+  .pipe(webpack({
+    output: {
+      filename: 'index.js'
+    }
+  }))
+  .pipe(gulp.dest('webpack/'))
+});
+
+// eslint
+gulp.task('lint', () => {
+  gulp.src(['src/*.js', 'src/scripts/*.js'])
+  .pipe(eslint())
+  .pipe(eslint.format())
+  .pipe(eslint.failAfterError())
+});
 
